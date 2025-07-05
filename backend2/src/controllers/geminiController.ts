@@ -4,39 +4,9 @@ import { randomBytes } from 'crypto'; // For generating unique IDs for images if
 import path from 'path'; // For path manipulation, though not saving to disk in this version
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-    
-// Define possible topics for LinkedIn posts (can be moved to a config file)
-// const POSSIBLE_TOPICS = [
-//     "React",
-//     "Next.js",
-//     "Web Development best practices",
-//     "Artificial Intelligence (AI) ethics",
-//     "Web Development and AI integration",
-//     "Writing production-ready code",
-//     "Software development best practices",
-//     "Data Structures and Algorithms (DSA) for interviews",
-//     "Cloud computing with AWS",
-//     "Cloud computing with Azure",
-//     "DevOps automation",
-//     "Cybersecurity trends",
-//     "Machine Learning model deployment",
-//     "Frontend performance optimization",
-//     "Backend scalability",
-//     "Containerization with Docker and Kubernetes"
-// ];
 
-// Controller for generating LinkedIn content (text)
 export const generateText = async (req: Request, res: Response) => {
-    // --- CHANGES START HERE ---
-    // Do not ask the user for professionalRole or topic.
-    // Determine them directly within the function.
     const { professionalRole, topic } = req.body;
-
-    // const professionalRole = "AI/ML Engineer"; // Example: Hardcode a professional role
-    // const topic = getRandomTopic(); // Randomly select a topic from your predefined list
-
-    // Removed the 'if (!professionalRole || !topic)' check as they are now defined internally
-    // --- CHANGES END HERE ---
 
     if (!GEMINI_API_KEY) {
         return res.status(500).json({ error: 'Gemini API Key is not configured on the server.' });
@@ -86,7 +56,69 @@ export const generateText = async (req: Request, res: Response) => {
     }
 };
 
-// Controller for generating image
+// export const generateImage = async (req: Request, res: Response) => {
+//   const { prompt } = req.body;
+
+//   if (!prompt) {
+//     return res.status(400).json({ error: 'Prompt is required for image generation.' });
+//   }
+//   if (!GEMINI_API_KEY) {
+//     return res.status(500).json({ error: 'Gemini API Key is not configured on the server.' });
+//   }
+
+//   const payload = {
+//     contents: [
+//       { parts: [{ text: prompt }] }
+//     ],
+//     generationConfig: {
+//       // Ask for both text and image back
+//       responseModalities: ["TEXT", "IMAGE"],
+//       // Optional: control dimensions & format
+//       imageConfig: {
+//         mimeType: "image/png",
+//         height: 512,
+//         width: 512
+//       },
+//       // You can still tune temperature, etc.
+//       temperature: 0.9,
+//       maxOutputTokens: 1_000
+//     }
+//   };
+
+//   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${GEMINI_API_KEY}`;
+
+//   try {
+//     const { data: result } = await axios.post(apiUrl, payload, {
+//       headers: { 'Content-Type': 'application/json' }
+//     });
+
+//     // Extract the base64 image
+//     let imageDataUrl: string | null = null;
+//     const parts = result.candidates?.[0]?.content?.parts || [];
+//     for (const part of parts) {
+//       if (part.inlineData?.data) {
+//         const mt = part.inlineData.mimeType || 'image/png';
+//         imageDataUrl = `data:${mt};base64,${part.inlineData.data}`;
+//         break;
+//       }
+//     }
+
+//     if (imageDataUrl) {
+//       return res.json({ imageUrl: imageDataUrl });
+//     } else {
+//       return res.status(500).json({
+//         error: 'No image data found in Gemini API response.',
+//         details: result
+//       });
+//     }
+//   } catch (error: any) {
+//     console.error('Error generating image from Gemini:', error.response?.data || error.message);
+//     return res.status(500).json({
+//       error: 'Failed to generate image.',
+//       details: error.response?.data || error.message
+//     });
+//   }
+// };
 export const generateImage = async (req: Request, res: Response) => {
     const { prompt } = req.body;
 
@@ -99,50 +131,41 @@ export const generateImage = async (req: Request, res: Response) => {
 
     const payload = {
         contents: [
-            {
-                parts: [
-                    { text: prompt }
-                ]
-            }
+            { parts: [{ text: prompt }] }
         ],
-        // Note: As per previous interactions, this model gemini-2.0-flash-preview-image-generation
-        // expects IMAGE, TEXT modalities. We rely on the parsing logic to extract the image.
-        // It does not accept 'responseMimeType: "image/png"' directly in generationConfig.
-        generationConfig: {} // Removed responseModalities: ["TEXT", "IMAGE"] as it's not a valid config for this endpoint
+        generationConfig: {
+            // Corrected: Include both TEXT and IMAGE modalities
+            responseModalities: ["TEXT", "IMAGE"],
+            temperature: 0.9
+        }
     };
 
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${GEMINI_API_KEY}`;
+    const apiUrl =
+        `https://generativelanguage.googleapis.com/v1beta/models/` +
+        `gemini-2.0-flash-preview-image-generation:generateContent?key=${GEMINI_API_KEY}`;
 
     try {
-        const response = await axios.post(apiUrl, payload, {
+        const { data: result } = await axios.post(apiUrl, payload, {
             headers: { 'Content-Type': 'application/json' }
         });
 
-        const result = response.data;
-        if (result.candidates && result.candidates.length > 0 &&
-            result.candidates[0].content && result.candidates[0].content.parts &&
-            result.candidates[0].content.parts.length > 0) {
-            
-            let imageDataUrl: string | null = null;
-            for (const part of result.candidates[0].content.parts) {
-                if (part.inlineData && part.inlineData.data) {
-                    const mimeType = part.inlineData.mimeType || 'image/png';
-                    imageDataUrl = `data:${mimeType};base64,${part.inlineData.data}`;
-                    break; // Found the image, no need to check other parts
-                }
-            }
-
-            if (imageDataUrl) {
-                res.json({ imageUrl: imageDataUrl });
-            } else {
-                res.status(500).json({ error: 'No image data found in Gemini API response.', details: result });
-            }
-
-        } else {
-            res.status(500).json({ error: 'Gemini API image response structure unexpected or content missing.', details: result });
+        const parts = result.candidates?.[0]?.content?.parts || [];
+        const imagePart = parts.find((p: any) => p.inlineData?.data);
+        if (imagePart && imagePart.inlineData) {
+            const mime = imagePart.inlineData.mimeType || 'image/png';
+            const b64 = imagePart.inlineData.data;
+            return res.json({ imageUrl: `data:${mime};base64,${b64}` });
         }
-    } catch (error: any) {
-        console.error('Error generating image from Gemini:', error.response ? error.response.data : error.message);
-        res.status(500).json({ error: 'Failed to generate image.', details: error.response ? error.response.data : error.message });
+
+        return res.status(500).json({
+            error: 'No image data found in Gemini API response.',
+            details: result
+        });
+    } catch (err: any) {
+        console.error('Error generating image from Gemini:', err.response?.data || err.message);
+        return res.status(500).json({
+            error: 'Failed to generate image.',
+            details: err.response?.data || err.message
+        });
     }
 };
