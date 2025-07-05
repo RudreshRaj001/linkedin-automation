@@ -4,14 +4,14 @@ import React, { useState } from 'react';
 const Header = ({ currentPage, setCurrentPage }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
-  const navItems = [
-    { id: 'posts', label: 'Post Generator', icon: '📝' },
-    { id: 'images', label: 'Image Generator', icon: '🤖' },
-    { id: 'upload', label: 'Image Upload', icon: '🖼️' },
-    { id: 'post', label: 'Create Post', icon: '🚀' },
-    { id: 'user', label: 'User Data', icon: '🚀' },
-    { id: 'imagePost', label: 'LinkedIn Actions With Image', icon: '🚀' }
-  ];
+ const navItems = [
+  { id: 'posts',      label: 'Post Generator',             icon: '✍️'  },
+  { id: 'images',     label: 'Image Generator',            icon: '🖼️' },
+  { id: 'post',       label: 'Create Post',                icon: '💬'  },
+  { id: 'upload',     label: 'Image Upload',               icon: '📤' },
+  { id: 'imagePost',  label: 'Create Post With Image',     icon: '🖋️'  },
+  { id: 'user',       label: 'User Data',                  icon: '👤'  },
+];
 
   return (
     <header className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 shadow-2xl">

@@ -91,11 +91,12 @@ const LinkedInImagePost = () => {
         formData.append('imageDescription', imageDescription);
       }
 
-      await axios.post(`${API_BASE_URL}/api/linkedin/post-with-image`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      // await axios.post(`${API_BASE_URL}/api/linkedin/post-with-image`, formData, {
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data',
+      //   },
+      // });
+      await axios.post(`${API_BASE_URL}/api/linkedin/post-with-image`, formData);
 
       setPostingSuccess(true);
       setPostText("");

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { postToLinkedIn, getUserInfo } from '../controllers/linkedinController'; // Import getUserInfo
+import { postToLinkedIn, getUserInfo, postImageToLinkedIn } from '../controllers/linkedinController'; // Import getUserInfo
 
 const router = Router();
 
@@ -7,7 +7,8 @@ const router = Router();
 router.post('/post', postToLinkedIn);
 
 // Route for getting user info from LinkedIn
-router.get('/userinfo', getUserInfo); // New route added
+router.get('/userinfo', getUserInfo);
+
+router.post("/post-with-image", postImageToLinkedIn); 
 
 export default router;
-
