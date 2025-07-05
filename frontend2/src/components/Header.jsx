@@ -8,7 +8,7 @@ const Header = ({ currentPage, setCurrentPage }) => {
   { id: 'posts',      label: 'Post Generator',             icon: '✍️'  },
   { id: 'images',     label: 'Image Generator',            icon: '🖼️' },
   { id: 'post',       label: 'Create Post',                icon: '💬'  },
-  { id: 'upload',     label: 'Image Upload',               icon: '📤' },
+  // { id: 'upload',     label: 'Image Upload',               icon: '📤' },
   { id: 'imagePost',  label: 'Create Post With Image',     icon: '🖋️'  },
   { id: 'user',       label: 'User Data',                  icon: '👤'  },
 ];
