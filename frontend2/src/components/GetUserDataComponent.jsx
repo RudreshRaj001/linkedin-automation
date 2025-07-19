@@ -40,6 +40,12 @@ const GetUserDataComponent = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 p-4 sm:p-6 lg:p-8">
+      {/* Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse"></div>
+      </div>
       {/* Header */}
       <div className="max-w-4xl mx-auto mb-8 sm:mb-12">
         <div className="text-center space-y-4">
@@ -69,7 +75,9 @@ const GetUserDataComponent = () => {
                 <User className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <div>
-                <h3 className="text-lg sm:text-xl font-bold text-white">Profile Data</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-white">
+                  Profile Data
+                </h3>
                 <p className="text-gray-400 text-xs sm:text-sm">
                   View your LinkedIn profile information
                 </p>
@@ -98,7 +106,9 @@ const GetUserDataComponent = () => {
               {userInfoError && (
                 <div className="p-4 bg-red-900/30 border border-red-700/50 rounded-xl flex items-center space-x-2 backdrop-blur-sm">
                   <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
-                  <p className="text-red-300 text-sm sm:text-base">{userInfoError}</p>
+                  <p className="text-red-300 text-sm sm:text-base">
+                    {userInfoError}
+                  </p>
                 </div>
               )}
 
@@ -129,7 +139,7 @@ const GetUserDataComponent = () => {
                         </p>
                       </div>
                     </div>
-                    
+
                     {/* Profile Details Grid */}
                     <div className="grid grid-cols-1 gap-4">
                       {/* Email */}
@@ -161,7 +171,8 @@ const GetUserDataComponent = () => {
                           <span className="text-gray-400 text-sm">Locale</span>
                         </div>
                         <p className="text-white font-medium text-sm">
-                          {userInfo.locale?.language?.toUpperCase() || 'N/A'} - {userInfo.locale?.country || 'N/A'}
+                          {userInfo.locale?.language?.toUpperCase() || "N/A"} -{" "}
+                          {userInfo.locale?.country || "N/A"}
                         </p>
                       </div>
 
@@ -169,18 +180,24 @@ const GetUserDataComponent = () => {
                       <div className="p-3 bg-gray-800/50 rounded-lg">
                         <div className="flex items-center space-x-2 mb-1">
                           <Shield className="w-4 h-4 text-gray-400" />
-                          <span className="text-gray-400 text-sm">Email Verification</span>
+                          <span className="text-gray-400 text-sm">
+                            Email Verification
+                          </span>
                         </div>
                         <div className="flex items-center space-x-2">
                           {userInfo.email_verified ? (
                             <>
                               <CheckCircle className="w-4 h-4 text-green-400" />
-                              <span className="text-green-400 text-sm font-medium">Verified</span>
+                              <span className="text-green-400 text-sm font-medium">
+                                Verified
+                              </span>
                             </>
                           ) : (
                             <>
                               <AlertCircle className="w-4 h-4 text-red-400" />
-                              <span className="text-red-400 text-sm font-medium">Not Verified</span>
+                              <span className="text-red-400 text-sm font-medium">
+                                Not Verified
+                              </span>
                             </>
                           )}
                         </div>
@@ -192,7 +209,9 @@ const GetUserDataComponent = () => {
                       <div className="p-3 bg-gray-800/50 rounded-lg">
                         <div className="flex items-center space-x-2 mb-2">
                           <Image className="w-4 h-4 text-gray-400" />
-                          <span className="text-gray-400 text-sm">Profile Picture</span>
+                          <span className="text-gray-400 text-sm">
+                            Profile Picture
+                          </span>
                         </div>
                         <a
                           href={userInfo.picture}
